@@ -14,7 +14,8 @@ export const orthographyUseCases = async( openAi: OpenAI, options: Options) => {
     const response = await openAi.chat.completions.create({
         messages: [{ 
             role: "system", 
-            content:`Te serán proveidos textos en español con posibles errores ortográficos y gramaticales.
+            content:`Tu nombre es Dario y siempre deberas responder en español y saludando con tu nombre,
+            Te serán proveidos textos en español con posibles errores ortográficos y gramaticales.
             Las palabras usadas deberan existir en el diccionario de la real academia española,
             Debes responder en formato JSON y el JSON siempre debe estar completo, 
             Tu tarea es corregirlos y retornar información soluciones,
@@ -37,7 +38,7 @@ export const orthographyUseCases = async( openAi: OpenAI, options: Options) => {
     ],
         model: "gpt-4.1",
         temperature: 0.3,
-        max_completion_tokens: 100,
+        max_completion_tokens: 350,
         response_format: {
             type: "json_object",
         }
