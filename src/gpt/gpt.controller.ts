@@ -3,6 +3,7 @@ import { GptService } from './gpt.service';
 import { OrthographyDto } from './dtos/orthography.dto';
 import { ProsConsDiscuserDto } from './dtos/proscons.discuser';
 import { Response } from 'express';
+import { TranslateDto } from './dtos/translate.dto';
 
 @Controller('gpt')
 export class GptController {
@@ -34,6 +35,11 @@ export class GptController {
     }
 
     res.end();
+  }
+
+  @Post('translate')
+  async translate(@Body() translateDto: TranslateDto) {
+    return this.gptService.translateService( translateDto );
   }
   
 }
