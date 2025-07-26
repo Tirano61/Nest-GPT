@@ -4,6 +4,7 @@ import { OrthographyDto } from './dtos/orthography.dto';
 import { ProsConsDiscuserDto } from './dtos/proscons.discuser';
 import { Response } from 'express';
 import { TranslateDto } from './dtos/translate.dto';
+import { TextToAudioDto } from './dtos/text-to-audio.dto';
 
 @Controller('gpt')
 export class GptController {
@@ -40,6 +41,11 @@ export class GptController {
   @Post('translate')
   async translate(@Body() translateDto: TranslateDto) {
     return this.gptService.translateService( translateDto );
+  }
+
+  @Post('text-to-audio')
+  async textToAudio(@Body() textToAudioDto: TextToAudioDto) {
+    return this.gptService.textToAudioService( textToAudioDto );
   }
   
 }
