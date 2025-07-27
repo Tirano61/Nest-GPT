@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseFilePipe, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, FileTypeValidator, Get, HttpStatus, MaxFileSizeValidator, Param, ParseFilePipe, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { GptService } from './gpt.service';
 import { OrthographyDto } from './dtos/orthography.dto';
 import { ProsConsDiscuserDto } from './dtos/proscons.discuser';
@@ -86,7 +86,10 @@ export class GptController {
   async audioToText(
     @UploadedFile(
       new ParseFilePipe({
-        validators:[]
+        validators:[
+          new MaxFileSizeValidator({ maxSize: 1000 * 1024 * 5, message: ' File is bigger than 10Mb' }),
+          new FileTypeValidator({ fileType: 'audio/*' }) // 10 MB
+        ]
       })
     ) file: Express.Multer.File,
   ) {
