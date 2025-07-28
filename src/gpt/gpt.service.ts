@@ -11,6 +11,8 @@ import { TextToAudioDto } from './dtos/text-to-audio.dto';
 import { textToAudioUseCase } from './use-cases/text-to-audio.use-case';
 import * as path from 'path';
 import * as fs from 'fs';
+import { audioToTextUseCase } from './use-cases/audio-to-text.use-case';
+import { AudioToTextDto } from './dtos/audio-to-text.dto';
 
 @Injectable()
 export class GptService {
@@ -48,5 +50,10 @@ export class GptService {
         console.log(`File path: ${filePath}`);
 
         return filePath;
+    }
+
+    async audioToTextService( audioFile: Express.Multer.File, audioToTextDto: AudioToTextDto) {
+        const { prompt } = audioToTextDto;
+        return await audioToTextUseCase(this.openAi, { audioFile, prompt });
     }
 }
