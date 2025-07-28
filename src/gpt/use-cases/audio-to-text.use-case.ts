@@ -17,6 +17,6 @@ export const audioToTextUseCase = async ( openAi: OpenAI, options: Options) => {
         response_format: 'json',
     });
 
-    return resp.text || 'No se pudo transcribir el audio, intente de nuevo más tarde';
+    return resp || 'No se pudo transcribir el audio, intente de nuevo más tarde';
 
 }
