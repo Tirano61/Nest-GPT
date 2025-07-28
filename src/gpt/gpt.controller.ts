@@ -7,6 +7,7 @@ import { TranslateDto } from './dtos/translate.dto';
 import { TextToAudioDto } from './dtos/text-to-audio.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { AudioToTextDto } from './dtos/audio-to-text.dto';
 
 @Controller('gpt')
 export class GptController {
@@ -80,7 +81,22 @@ export class GptController {
           const fileName = `${new Date().getTime()}.${fileExtension}`;
           return callback(null, fileName );
         }
-      }), 
+      }),
+      fileFilter: (req, file, callback) => {
+        const allowedMimes = [
+          'audio/mpeg',
+          'audio/mp4', 
+          'audio/x-m4a',
+          'audio/wav',
+          'audio/webm'
+        ];
+        
+        if (allowedMimes.includes(file.mimetype)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Tipo de archivo no permitido'), false);
+        }
+      }
     })
   )
   async audioToText(
@@ -88,12 +104,13 @@ export class GptController {
       new ParseFilePipe({
         validators:[
           new MaxFileSizeValidator({ maxSize: 1000 * 1024 * 5, message: ' File is bigger than 10Mb' }),
-          new FileTypeValidator({ fileType: 'audio/*' }) // 10 MB
+          
         ]
       })
     ) file: Express.Multer.File,
+    @Body() audioToTextDto: AudioToTextDto
   ) {
-    //return await this.gptService.audioToTextService( textToAudioDto );
-    return 'Done';
+
+    return this.gptService.audioToTextService( file, audioToTextDto );
   }
 }
