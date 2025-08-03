@@ -1,9 +1,8 @@
 
-
-
 import OpenAI from "openai";
 import * as fs from 'fs'
-import { downloadImageAsPng } from "src/helpers/download-image-as-png";
+import * as path from 'path';
+import { downloadImageAsPng, downloadBase64ImageAsPng } from 'src/helpers/download-image-as-png';
 
 interface Options {
     prompt: string;
@@ -13,24 +12,50 @@ interface Options {
 
 export const imageGenerationUseCase = async ( openAi: OpenAI, options: Options) => {
     const { prompt, originalImage, maskImage } = options;
-    const resp = await openAi.images.generate({
+
+    if( !originalImage || !maskImage) {
+
+        const resp = await openAi.images.generate({
+            prompt: prompt,
+            n: 1,
+            size: '1024x1024',
+            model: 'dall-e-3',
+            quality: 'standard',
+            response_format: 'url',
+        });
+        
+        const url = await downloadImageAsPng(resp.data![0].url!);
+    
+        return {
+            url: url,
+            openAiUrl: resp.data![0].url,
+            revised_prompt: resp.data![0].revised_prompt ,
+        } 
+    }
+
+    const pngImagePath = await downloadImageAsPng( originalImage );
+    const pngMaskPath = await downloadBase64ImageAsPng( maskImage );    
+
+    const resp = await openAi.images.edit({
+        model: 'dall-e-3',
         prompt: prompt,
+        image: fs.createReadStream(pngImagePath),
+        mask: fs.createReadStream(pngMaskPath),
         n: 1,
         size: '1024x1024',
-        model: 'dall-e-3',
-        quality: 'standard',
-        response_format: 'url',
+        response_format: 'url', 
     });
-    
-    await downloadImageAsPng(resp.data![0].url!);
-    
-    console.log(resp);
+
+    const localImagePath = await downloadImageAsPng(resp.data![0].url!);
+    const fileName = path.basename(localImagePath);
+
+    const publicUrl = `loclahost:3000/ ${fileName}`;
 
     return {
-        url: resp.data![0].url,
-        localPath: '',
-        revised_prompt: resp.data![0].revised_prompt ,
-    } 
-
+        url: publicUrl,
+        openAiUrl: resp.data![0].url,
+        revised_prompt: resp.data![0].revised_prompt,
+        fileName: fileName
+    };
 
 }
