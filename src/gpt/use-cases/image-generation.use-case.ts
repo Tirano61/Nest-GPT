@@ -3,6 +3,7 @@
 
 import OpenAI from "openai";
 import * as fs from 'fs'
+import { downloadImageAsPng } from "src/helpers/download-image-as-png";
 
 interface Options {
     prompt: string;
@@ -20,8 +21,11 @@ export const imageGenerationUseCase = async ( openAi: OpenAI, options: Options) 
         quality: 'standard',
         response_format: 'url',
     });
-   
+    
+    await downloadImageAsPng(resp.data![0].url!);
+    
     console.log(resp);
+
     return {
         url: resp.data![0].url,
         localPath: '',
