@@ -15,21 +15,17 @@ export const  downloadImageAsPng = async(url: string) => {
     }
 
     const folderPath = path.resolve('./', './genereted/image/');
-    const fileName = `${ new Date().getTime() }.png`;
+    const ImageNamePng = `${ new Date().getTime() }.png`;
     fs.mkdirSync(folderPath, { recursive: true });
 
     const buffer = Buffer.from(await response.arrayBuffer());
 
     //fs.writeFileSync( `${folderPath}/${fileName}`, buffer);
+    const completePath = path.join(folderPath, ImageNamePng);
 
-    await sharp(buffer)
-        .png()  
-        .ensureAlpha()
-        .toFile(path.join(folderPath, fileName));
+    await sharp(buffer).png().ensureAlpha().toFile(completePath);
 
-    return path.join(folderPath, fileName);
-    
-
+    return ImageNamePng;
 
 }
 
@@ -44,14 +40,10 @@ export const downloadBase64ImageAsPng = async (base64Image: string) => {
   fs.mkdirSync(folderPath, { recursive: true });
 
   const imageNamePng = `${ new Date().getTime() }-64.png`;
-  
-
+  const completePath = path.join(folderPath, imageNamePng);
   // Transformar a RGBA, png // Así lo espera OpenAI
-  await sharp(imageBuffer)
-    .png()
-    .ensureAlpha()
-    .toFile(path.join(folderPath, imageNamePng));
+  await sharp(imageBuffer).png().ensureAlpha().toFile(completePath);
 
-  return path.join(folderPath, imageNamePng);
+  return imageNamePng;
 
 }

@@ -15,6 +15,9 @@ import { audioToTextUseCase } from './use-cases/audio-to-text.use-case';
 import { AudioToTextDto } from './dtos/audio-to-text.dto';
 import { ImageGenerationDto } from './dtos/image-genaration.dto';
 import { imageGenerationUseCase } from './use-cases/image-generation.use-case';
+import { ImageVariationDto } from './dtos/image-variation.dto';
+import { generate } from 'rxjs';
+import { imageVariationUseCase } from './use-cases/image-variation.use-case';
 
 @Injectable()
 export class GptService {
@@ -70,5 +73,9 @@ export class GptService {
         if( !wasFound )throw new NotFoundException(' El archivo no fue encontrado');
 
         return filePath;
+    }
+
+    async imageVariationService( { baseImage }: ImageVariationDto ) {
+        return imageVariationUseCase(this.openAi, { baseImage: baseImage });
     }
 }
