@@ -6,15 +6,15 @@ import * as sharp from 'sharp';
 
 
 
-export const  downloadImageAsPng = async(url: string) => {
+export const  downloadImageAsPng = async( url: string, fullPath: boolean = false ) => {
 
     const response = await fetch(url);
-    
+
     if(!response.ok) {
         throw new InternalServerErrorException(`Failed to download image: ${response.statusText}`);
     }
 
-    const folderPath = path.resolve('./', './genereted/image/');
+    const folderPath = path.resolve('./', './generated/images/');
     const ImageNamePng = `${ new Date().getTime() }.png`;
     fs.mkdirSync(folderPath, { recursive: true });
 
@@ -25,12 +25,12 @@ export const  downloadImageAsPng = async(url: string) => {
 
     await sharp(buffer).png().ensureAlpha().toFile(completePath);
 
-    return ImageNamePng;
+    return fullPath ? completePath : ImageNamePng;
 
 }
 
 
-export const downloadBase64ImageAsPng = async (base64Image: string) => {
+export const downloadBase64ImageAsPng = async ( base64Image: string, fullPath: boolean = false ) => {
 
   // Remover encabezado
   base64Image = base64Image.split(';base64,').pop()!;
@@ -44,6 +44,6 @@ export const downloadBase64ImageAsPng = async (base64Image: string) => {
   // Transformar a RGBA, png // Así lo espera OpenAI
   await sharp(imageBuffer).png().ensureAlpha().toFile(completePath);
 
-  return imageNamePng;
+  return fullPath ? completePath : imageNamePng;
 
 }
