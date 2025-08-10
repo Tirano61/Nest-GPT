@@ -67,7 +67,7 @@ export class GptService {
     }
 
     async getImageGenerationService( fileName: string ) {
-        const filePath = path.resolve( './',  './genereted/image/', fileName);
+        const filePath = path.resolve( './',  './generated/images/', fileName);
         console.log(filePath);
         const wasFound = fs.existsSync(filePath);
         if( !wasFound )throw new NotFoundException(' El archivo no fue encontrado');
