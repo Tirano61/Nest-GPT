@@ -24,7 +24,8 @@ export const imageGenerationUseCase = async ( openAi: OpenAI, options: Options) 
             response_format: 'url',
         });
         
-        const url = await downloadImageAsPng(resp.data![0].url!);
+        const fileName = await downloadImageAsPng(resp.data![0].url!);
+        const url = `${process.env.SERVER_URL}gpt/image-generation/${fileName}`; //localhost:3000/gpt/image-generation/1754247056558.png
     
         return {
             url: url,
@@ -46,13 +47,11 @@ export const imageGenerationUseCase = async ( openAi: OpenAI, options: Options) 
         response_format: 'url', 
     });
 
-    const localImagePath = await downloadImageAsPng(resp.data![0].url!);
-    const fileName = path.basename(localImagePath);
-
-    const publicUrl = `loclahost:3000/ ${fileName}`;
+    const fileName = await downloadImageAsPng(resp.data![0].url!);
+    const url = `${process.env.SERVER_URL}gpt/image-generation/${fileName}`; //localhost:3000/gpt/image-generation/1754247056558.png;
 
     return {
-        url: publicUrl,
+        url: url,
         openAiUrl: resp.data![0].url,
         revised_prompt: resp.data![0].revised_prompt,
         fileName: fileName
