@@ -34,8 +34,8 @@ export const imageGenerationUseCase = async ( openAi: OpenAI, options: Options) 
         } 
     }
 
-    const pngImagePath = await downloadImageAsPng( originalImage );
-    const pngMaskPath = await downloadBase64ImageAsPng( maskImage );    
+    const pngImagePath = await downloadImageAsPng( originalImage, true );
+    const pngMaskPath = await downloadBase64ImageAsPng( maskImage, true );    
 
     const resp = await openAi.images.edit({
         model: 'dall-e-3',
