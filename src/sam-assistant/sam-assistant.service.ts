@@ -32,5 +32,4 @@ export class SamAssistantService {
         return messages.reverse();
     }
 
-
 }
