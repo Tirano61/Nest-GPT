@@ -15,6 +15,6 @@ export class SamAssistantController {
   async userQuestion(
     @Body() questionDto: QuestionDto
   ) {
-    return this.samAssistantService.userQuestion(questionDto);
+    return this.samAssistantService.userQuestion( questionDto);
   }
 }
